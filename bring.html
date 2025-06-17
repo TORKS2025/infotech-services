@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Pizza to Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .menu-item {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #3498db;
+      color: white;
+    }
+
+    .order-summary {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .total-price {
+      font-size: 1.2em;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .payment-btn {
+      background-color: #28a745;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Pizza Menu</h1>
+
+  <!-- Pizza Menu -->
+  <div class="menu-item">
+    <span>Margherita - $8.99</span>
+    <button class="btn" onclick="addToOrder('Margherita', 8.99)">Add to Order</button>
+  </div>
+  <div class="menu-item">
+    <span>Pepperoni - $12.99</span>
+    <button class="btn" onclick="addToOrder('Pepperoni', 12.99)">Add to Order</button>
+  </div>
+  <div class="menu-item">
+    <span>Veggie - $10.99</span>
+    <button class="btn" onclick="addToOrder('Veggie', 10.99)">Add to Order</button>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="order-summary" id="order-summary">
+    <h3>Your Order</h3>
+    <p><strong>Table Number:</strong> <input type="number" id="table-number" placeholder="Enter Table Number" /></p>
+    <ul id="order-list"></ul>
+    <div class="total-price" id="total-price">Total: $0.00</div>
+    <button class="btn payment-btn" onclick="proceedToPayment()">Proceed to Payment</button>
+  </div>
+
+  <script>
+    let order = [];
+
+    // Function to add pizza to order
+    function addToOrder(name, price) {
+      const item = { name, price, qty: 1 };
+      order.push(item);
+      renderOrder();
+    }
+
+    // Render the order list and total
+    function renderOrder() {
+      const orderList = document.getElementById('order-list');
+      const totalPriceElement = document.getElementById('total-price');
+      orderList.innerHTML = '';
+      let total = 0;
+
+      order.forEach((item, index) => {
+        const itemTotal = (item.price * item.qty).toFixed(2);
+        total += parseFloat(itemTotal);
+
+        const li = document.createElement('li');
+        li.textContent = `${item.name} x${item.qty} - $${itemTotal}`;
+        orderList.appendChild(li);
+      });
+
+      totalPriceElement.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    // Proceed to payment (simple mock-up)
+    function proceedToPayment() {
+      const tableNumber = document.getElementById('table-number').value;
+      if (!tableNumber) {
+        alert('Please enter a table number!');
+        return;
+      }
+
+      const totalAmount = order.reduce((acc, item) => acc + item.price * item.qty, 0);
+      alert(`Table Number: ${tableNumber}\nTotal: $${totalAmount.toFixed(2)}\n\nYour pizza is on the way!`);
+
+      // In a real scenario, integrate a payment gateway here (e.g., Stripe)
+      resetOrder();
+    }
+
+    // Reset order after payment
+    function resetOrder() {
+      order = [];
+      renderOrder();
+      document.getElementById('table-number').value = '';
+    }
+  </script>
+
+</body>
+</html>
